@@ -29,10 +29,7 @@ export const ContactsTable = ({ data }) => {
     const classes = useStyles();
 
     return (
-        // <div>
-        //     {data[0].name.first}
-        // </div>
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} data-testid="contacts-table-container" >
         <Table className={classes.table} aria-label="contacts table">
             <TableHead>
                 <TableRow>
