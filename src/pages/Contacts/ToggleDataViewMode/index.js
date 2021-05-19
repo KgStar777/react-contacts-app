@@ -1,4 +1,6 @@
 import React, { useCallback } from "react";
+import {DATA_VIEW_MODE} from "../../constants";
+import PropTypes from "prop-types"
 
 //grid-table switcher
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -28,4 +30,10 @@ export const ToggleDataViewMode = ({ dataViewMode, setDataViewMode }) => {
     );
 };
 
-export default Index;
+export default ToggleDataViewMode;
+
+ToggleDataViewMode.propTypes = {
+    dataViewMode: PropTypes.oneOf([DATA_VIEW_MODE.TABLE, DATA_VIEW_MODE.GRID]).isRequired,
+    setDataViewMode: PropTypes.func.isRequired
+
+}
