@@ -3,20 +3,16 @@ import { makeStyles, createStyles } from '@material-ui/core/styles';
 import {DATA_VIEW_MODE} from "../constants";
 import {ToggleDataViewMode} from "./ToggleDataViewMode";
 import {useDataViewMode} from "./useDataViewMode";
+import {ContactsFilters} from "./ContactsFilters";
 
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 
+import {useContacts} from "./useContacts";
+import {ContactsTable} from "./ContactsTable";
 import Grid from '@material-ui/core/Grid';
 import Container from "@material-ui/core/Container";
-import {useContacts} from "./useContacts";
 import Typography from "@material-ui/core/Typography";
-import {ContactsTable} from "./ContactsTable";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from "@material-ui/core/Box";
-import TextField from "@material-ui/core/TextField";
 
 
 const useStyles = makeStyles((theme) =>
@@ -30,14 +26,12 @@ const useStyles = makeStyles((theme) =>
         filtersContainer: {
             marginBottom: theme.spacing(3),
         },
-        fieldGender: {
-            minWidth: 120,
-        }
     }))
 
 const FiltersDefaultValue = {
     fullname: "",
-    gender: "All"
+    gender: "All",
+    nationality: "All",
 };
 
 const filterByFullName = ({first, last}, fullname) => {
@@ -53,6 +47,13 @@ const filterByGender = (value, gender) => {
 //    return gender === "" || value === gender; //исключение || общий случай
 }
 
+const filterNationality = (value, nationality) => {
+    if (nationality === "All") {
+        return true;
+    }
+    return value === nationality;
+}
+
 export const Contacts = () => {
     const classes = useStyles();
     const contacts = useContacts();
@@ -62,18 +63,23 @@ export const Contacts = () => {
 
 
     // ВРУБИСЬ InputHandleChangeFilter
-    const handleChangeFilter = (event) => {
+    const updateFilter = (name, value) => {
         // console.log(`event.name: ${event.target.name}\n event.value: ${event.target.value}`)
         setFilters(prevFilters => ({
             ...prevFilters,
-            [event.target.name]: event.target.value
-        }))
+            [name]: value
+        }));
     };
+
+    const clearFilters = () => {
+        setFilters(FiltersDefaultValue);
+    }
 
     // ВРУБИСЬ InputFilterByFullName
     const filteredContacts = contacts.data.filter(c =>
         filterByFullName(c.name, filters.fullname))
-        .filter(c => filterByGender(c.gender, filters.gender));
+        .filter(c => filterByGender(c.gender, filters.gender))
+        .filter(c => filterNationality(c.nat, filters.nationality));
     // console.log("filteredContacts", filteredContacts)
 
     useEffect(() => {
@@ -89,40 +95,16 @@ export const Contacts = () => {
                             Contacts
                         </Typography>
 
-                        <ToggleDataViewMode dataViewMode={dataViewMode} setDataViewMode={setDataViewMode} />
-
+                        <ToggleDataViewMode dataViewMode={dataViewMode}
+                                            setDataViewMode={setDataViewMode} />
                     </Box>
 
                 {/*  INPUTS  */}
                 </Grid>
                 <Grid item xs={12} className={classes.filtersContainer}>
-                    <Box display="flex">
 
-                        <TextField name="fullname"
-                                   label="Fullname"
-                                   variant="outlined"
-                                   size="small"
-                                   value={filters.fullname}
-                                   onChange={handleChangeFilter}
-                        />
-
-
-                        <FormControl size="small" variant="outlined" className={classes.fieldGender}>
-                            <InputLabel id="gender">Gender</InputLabel>
-                            <Select
-                                labelId="gender"
-                                label="Gender"
-                                name="gender"
-                                value={filters.gender}
-                                onChange={handleChangeFilter}
-                            >
-                                <MenuItem value="All">All</MenuItem>
-                                <MenuItem value="male">Male</MenuItem>
-                                <MenuItem value="female">Female</MenuItem>
-                            </Select>
-                        </FormControl>
-
-                    </Box>
+                    {/*   Filters   */}
+                    <ContactsFilters filters={filters} updateFilter={ updateFilter } clearFilters={clearFilters} />
 
                 </Grid>
                 <Grid item xs={12}>
@@ -130,7 +112,6 @@ export const Contacts = () => {
                         if (contacts.isLoading) {
                             return <CircularProgress data-testid="contacts-loader" />
                         }
-
                         if (contacts.isError) {
                             return <h2>error</h2>
                         }
@@ -140,7 +121,6 @@ export const Contacts = () => {
                         if (dataViewMode === DATA_VIEW_MODE.GRID) {
                             return "grid"
                         }
-
                     })()}
                 </Grid>
             </Grid>

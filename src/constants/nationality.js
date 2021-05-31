@@ -18,6 +18,7 @@ export const NATIONALITIES = {
     US: "US",
 }
 
+// присвоим значения NATIONALITIES как ключ для NATIONALITIES_HUMAN_NAME
 export const NATIONALITIES_HUMAN_NAME = {
     [NATIONALITIES.AU]: "Australian",
     [NATIONALITIES.BR]: "Brazilian",

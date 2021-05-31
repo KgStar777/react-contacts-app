@@ -1,0 +1,15 @@
++++++++++ Object.entries +++++++++
+
+for (const [key, value] of Object.entries(object1)) {
+  console.log(`${key}: ${value}`);
+}
+
+
+
+
+      +++++++++ ХУКИ +++++++++
+useCallback(() => {ab}, [a,b])
+
+Мы реализуем useCallback, чтобы создать новую копию функции
+additionResult при условии, что одно из значений будет обновлено.
+
